@@ -12,11 +12,11 @@ git = "https://github.com/leanprover-community/mathlib4"
 rev = "master"
 
 [[lean_lib]]
-name = "Content"   # NEW: tells Lean that modules under Content/… exist
+name = "Text"   
 
 [[lean_lib]]
-name = "IFRNotes" 
+name = "LACNotes" 
 
 [[lean_exe]]
-name = "ifrnotes"
+name = "lacnotes"
 root = "Main"

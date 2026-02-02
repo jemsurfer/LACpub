@@ -1,5 +1,4 @@
 name = "LAC"
-defaultTargets = ["Lectures", "Proofs"]
 
 [[require]]
 name = "mathlib"

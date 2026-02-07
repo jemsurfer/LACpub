@@ -52,7 +52,7 @@ def E1 : Lang SigmaABC
 := { w | w.length <= 2 ∧ a ∈ w }
 
 def E1_enum : Finset (Word SigmaABC)
-:= sorry -- replace this
+:= { [a], [a,a], [a,b], [a,c], [b,a], [c,a] }
 
 example : E1 = E1_enum := by sorry
 -- you don't need to prove.
@@ -61,7 +61,7 @@ def E2 : Lang SigmaABC
 := L1 ∪ L2
 
 def E2_enum : Finset (Word SigmaABC)
-:= sorry -- replace this
+:= {[], [a], [b], [a,c], [c,a]}
 
 example : E2 = E2_enum := by sorry
 -- you don't need to prove.
@@ -70,7 +70,7 @@ def E3 : Lang SigmaABC
 := (L1 ⋅ { [] }) ⋅ (L2 ∩ L1)
 
 def E3_enum : Finset (Word SigmaABC)
-:= sorry -- replace this
+:= {[b], [b,b], [a,c,b]}
 
 example : E3 = E3_enum := by sorry
 -- you don't need to prove.
@@ -78,7 +78,7 @@ example : E3 = E3_enum := by sorry
 def E4 : Lang SigmaABC
 := (E2 ⋅ {}) ⋅ E3
 def E4_enum : Finset (Word SigmaABC)
-:= sorry -- replace this
+:= {}
 
 example : E4 = E4_enum := by sorry
 -- you don't need to prove.
@@ -87,7 +87,7 @@ def E5 : Lang SigmaABC
 := { [], [a], [b], [b, c] } *
    ∩ { w | List.length w <= 3 }
 def E5_enum : Finset (Word SigmaABC)
-:= sorry -- replace this
+:= {[],[a],[b],[b,c],[a,a],[a,b],[b,a],[b,b],[a,b,c],[b,b,c],[b,c,a],[b,c,b],[a,a,a],[a,a,b],[a,b,a],[a,b,b],[b,a,a],[b,a,b],[b,b,a],[b,b,b]}
 
 example : E5 = E5_enum := by sorry
 -- you don't need to prove.

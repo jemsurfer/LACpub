@@ -106,7 +106,7 @@ postfix : 100 " * " => star
 
 -- L₁ ⋅ ∅ = ∅ = ∅ ⋅ L₁
 -- L₁ ⋅ (L₂ ∪ L₃) = L₁ ⋅ L₂ ∪ L₁ ⋅ L₃
--- (L₁ ⋅ L₂) ∪ L₃ = L₁ ⋅ L₃ ∪ L₂ ⋅ L₃
+-- (L₁ ∪ L₂) ⋅ L₃ = L₁ ⋅ L₃ ∪ L₂ ⋅ L₃
 -- semiring
 
 -- + Law for star : Kleene algebra

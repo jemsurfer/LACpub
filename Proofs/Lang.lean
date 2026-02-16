@@ -127,7 +127,7 @@ example : [a,a,a,b] ∈  aeqbmod2 := by simp
 
 -- ANCHOR: anbm
 abbrev anbm : Lang SigmaABC
-:= { a^m ++ b^n | (m : ℕ)(n : ℕ)}
+:= { a^n ++ b^m | (n : ℕ)(m : ℕ)}
 -- ANCHOR_END: anbm
 
 example : [a,a,b] ∈ anbm := by
@@ -205,7 +205,7 @@ L₁ ⋅ L₂ = { w ++ v | (w ∈ L₁)(v ∈ L₂) }
 -- ANCHOR: concat_pred
 def L₃ : Lang Sigma
 | x => ∃ w v : Word Sigma ,
-        w ∈ L₂ ∧ v ∈ L₂ ∧ x = w ++ v
+        w ∈ L₁ ∧ v ∈ L₂ ∧ x = w ++ v
 -- ANCHOR_END: concat_pred
 
 open Nat

@@ -1,6 +1,9 @@
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.DeriveFintype
 import Mathlib.Data.Nat.ModEq
+import Proofs.Kleene  -- or whatever path your Kleene.lean has
+open Kleene
+
 -- ·  ⋅
 set_option linter.dupNamespace false
 set_option linter.unusedSectionVars false
@@ -246,6 +249,8 @@ postfix:100 " * " => star
 L * = { w : Word Sigma | ∃ n : ℕ, (w ∈  L ^ n) }
 -- ANCHOR_END: star_def
 := by rfl
+
+
 
 end LangOps
 

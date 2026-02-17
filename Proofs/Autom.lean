@@ -141,7 +141,7 @@ def δ_star : Finset A.Q → Word Sigma → Finset A.Q
 -- ANCHOR_END: NFA_delta_star
 
 -- ANCHOR: NFA_L
-def L : Lang Sigma
+abbrev L : Lang Sigma
 := { w : Word Sigma |
       ∃ q : A.Q ,
       q ∈ A.F ∩ δ_star A A.S w }

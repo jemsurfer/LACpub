@@ -1,8 +1,8 @@
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Tactic.DeriveFintype
 import Mathlib.Data.Nat.ModEq
-import Proofs.Kleene  -- or whatever path your Kleene.lean has
-open Kleene
+--import Proofs.Kleene  -- or whatever path your Kleene.lean has
+--open Kleene
 
 -- ·  ⋅
 set_option linter.dupNamespace false

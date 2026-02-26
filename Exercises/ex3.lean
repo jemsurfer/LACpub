@@ -20,6 +20,8 @@ abbrev a : RE SigmaABC := sym SigmaABC.a
 abbrev b : RE SigmaABC := sym SigmaABC.b
 abbrev c : RE SigmaABC := sym SigmaABC.c
 
+def any : RE SigmaABC := (a + b + c)★
+
 /-
 Give regular expressions defining the following languages over the alphabet Σ =
 {a, b, c}: (SigmaABC)
@@ -40,28 +42,30 @@ abbrev e0 : RE SigmaABC
 
 -- 1. All words that contain exactly one a.
 abbrev e1 : RE SigmaABC
-:= sorry
+:= (b + c)★ ⋅ a ⋅ (b + c)★
 
 -- 2. All words that contain at least two bs.
 abbrev e2 : RE SigmaABC
-:= sorry
+:= (a + b + c)★ ⋅ b ⋅ (a + b + c)★ ⋅ b ⋅ (a + b + c)★
 
 --- 3. All words that contain at most two cs.
 abbrev e3 : RE SigmaABC
-:= sorry
+:= (a + b)★ ⋅ c ⋅ (a + b)★ ⋅ c ⋅ (a + b)★
 
 --- 4. All words such that all b’s appear before all c’s.
 abbrev e4 : RE SigmaABC
-:= sorry
+:= (a + b)★ ⋅ (a + c)★
 
 --- 5. All words that contain exactly one b and one c (but any number of a’s).
 abbrev e5 : RE SigmaABC
-:= sorry
+:= a★ ⋅ b ⋅ a★ ⋅ c ⋅ a★ + a★ ⋅ c ⋅ a★ ⋅ b ⋅ a★
 
 -- 6. All words such that the number of a’s plus the number of b’s is odd.
+-- → Either more b's than a's or vice versa
+-- Repeat pairs then have one at the end
 abbrev e6 : RE SigmaABC
-:= sorry
+:= c★ ⋅ ((a + b) ⋅ c★ ⋅ (a + b) ⋅ c★)★ ⋅ (a + b) ⋅ c★
 
 -- 7. All words that contain the sequence abba at least once.
 abbrev e7 : RE SigmaABC
-:= sorry
+:= (a + b + c)★ ⋅ a ⋅ b ⋅ b ⋅ a ⋅ (a + b + c)★

@@ -10,6 +10,7 @@ namespace Re
 open Lang
 variable (Sigma : Type)[Alphabet Sigma]
 
+-- ANCHOR: RE
 inductive RE : Type
 | sym : Sigma → RE
 | empty : RE
@@ -17,10 +18,12 @@ inductive RE : Type
 | epsilon : RE
 | append : RE → RE → RE
 | star : RE → RE
+-- ANCHOR_END: RE
 
 open RE
 
 variable {Sigma : Type}[Alphabet Sigma]
+-- ANCHOR: REL
 def L : RE Sigma → Lang Sigma
 | sym x => { [ x ]}
 | empty => {}
@@ -28,6 +31,7 @@ def L : RE Sigma → Lang Sigma
 | epsilon => { [] }
 | append e1 e2 => L e1 ⋅ L e2
 | RE.star e => (L e) *
+-- ANCHOR_END: REL
 
 instance : Zero (RE Sigma) := ⟨RE.empty⟩
 instance : One  (RE Sigma) := ⟨RE.epsilon⟩
@@ -44,6 +48,17 @@ open Lang.Examples
 
 open SigmaABC
 open RE
+
+
+abbrev e₁ : RE SigmaABC :=
+-- ANCHOR: e₁
+ append
+  ( append
+      (plus (sym b) epsilon)
+      (star (append (sym a) (sym b)))
+  )
+  (plus (sym a) epsilon)
+-- ANCHOR_END: e₁
 
 def r : RE SigmaABC := (sym a + sym b)★ ⋅ ε
 

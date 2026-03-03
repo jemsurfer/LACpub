@@ -1,5 +1,5 @@
 /-
-COMP2012 (LAC) 2025
+COMP2012 (LAC) 2026
 
 Exercise 3
 
@@ -36,7 +36,7 @@ Give regular expressions defining the following languages over the alphabet Σ =
 -- 0. All words that contain no a and start with b.
 abbrev e0 : RE SigmaABC
 := b ⋅ (b + c)★
---:= append ((sym b) (star (plus (sym b) (sym c)))
+--:= append b (star (plus b c)
 
 -- 1. All words that contain exactly one a.
 abbrev e1 : RE SigmaABC

@@ -141,7 +141,7 @@ def δ_star : Finset A.Q → Word Sigma → Finset A.Q
 -- ANCHOR_END: NFA_delta_star
 
 -- ANCHOR: NFA_L
-def L : Lang Sigma
+abbrev L : Lang Sigma
 := { w : Word Sigma |
       ∃ q : A.Q ,
       q ∈ A.F ∩ δ_star A A.S w }
@@ -163,6 +163,9 @@ def A₃ : NFA (Fin 2)
             | _ , _ => {}
 }
 
+example : [0,1,0] ∈ L A₃ := sorry -- by simp [A₃,L,δ_star]
+example : [1,0,1] ∉ L A₃ := sorry
+
 end NFAex
 
 namespace nfaDfa
@@ -170,11 +173,13 @@ namespace nfaDfa
 variable {Sigma : Type}
 [Fintype Sigma][DecidableEq Sigma]
 
+-- ANCHOR: dfa2nfa
 def dfa2nfa (A : Dfa.DFA Sigma) : Nfa.NFA Sigma
 := { Q := A.Q
      S := {A.s}
      F := A.F
      δ := λ s w ↦ { A.δ s w}}
+-- ANCHOR_END: dfa2nfa
 
 open Finset
 
@@ -195,8 +200,14 @@ lemma dfa2nfa_δ_star_singleton (A : Dfa.DFA Sigma) :
       -- unfold one step, use the singleton-step lemma, then IH
       simp [Nfa.δ_star, Dfa.δ_star, dfa2nfa_δ_step_singleton, dfa2nfa_δ_star_singleton]
 
+-- theorem dfa2nfa_ok : ∀ A : Dfa.DFA Sigma,
+--     Dfa.L A = Nfa.L (dfa2nfa (Sigma := Sigma) A)
+
+-- ANCHOR: dfa2nfa_ok
 theorem dfa2nfa_ok : ∀ A : Dfa.DFA Sigma,
-    Dfa.L A = Nfa.L (dfa2nfa (Sigma := Sigma) A) := by
+    Dfa.L A = Nfa.L (dfa2nfa A)
+-- ANCHOR_END: dfa2nfa_ok
+:= by
   intro A
   ext w
   constructor
@@ -254,12 +265,14 @@ instance instAlphabetFinset (α : Type) [Alphabet α] : Alphabet (Finset α) :=
 abbrev Pow (α : Type) [Fintype α] [DecidableEq α] : Finset (Finset α) :=
   (Finset.univ : Finset α).powerset
 
+-- ANCHOR: nfa2dfa
 def nfa2dfa (A : Nfa.NFA Sigma) : Dfa.DFA Sigma
      := { Q := Finset A.Q
           s := A.S
           F := ⟪ S ∈ Pow A.Q |
                 ∃ (q : A.Q) , q ∈ S ∧ q ∈ A.F ⟫
           δ := δ_step A }
+-- ANCHOR_END: nfa2dfa
 
 #check (by infer_instance : DecidableEq A.Q)
 #check (by infer_instance : Fintype A.Q)
@@ -276,8 +289,12 @@ lemma nfa2dfa_δ_star (A : Nfa.NFA Sigma) :
       -- goal is now exactly the IH with S := δ_step A S a
       exact nfa2dfa_δ_star (S := Nfa.δ_step A S a) (w := w)
 
-theorem nfa2dfa_ok : ∀ A : Nfa.NFA Sigma,
-  Nfa.L A = Dfa.L (nfa2dfa (Sigma := Sigma) A) := by
+-- ANCHOR: nfa2dfa_ok
+theorem nfa2dfa_ok :
+  ∀ A : Nfa.NFA Sigma,
+  Nfa.L A = Dfa.L (nfa2dfa  A)
+-- ANCHOR_END: nfa2dfa_ok
+:= by
   intro A
   ext w
   -- rewrite DFA δ_star to NFA δ_star
@@ -350,8 +367,43 @@ theorem nfa2dfa_ok : ∀ A : Nfa.NFA Sigma,
     refine ⟨q, (Finset.mem_inter).2 ?_⟩
     exact ⟨hqF, hqS⟩
 
-
-
-
-
 end nfaDfa
+
+section nfaDfaEx
+
+open Lang.Examples
+open SigmaABC
+open Dfa.DFA
+open Nfa.NFA
+open DFAex
+open NFAex
+open nfaDfa
+
+#check dfa2nfa A₁
+
+def NA₁ : NFA SigmaABC :=
+-- ANCHOR: NA1
+   { Q := Fin 2
+     S := { 0 }
+     F := { 1 }
+     δ := λ | 0 , a => {1}
+            | 0 , _ => {0}
+            | 1,  _ => {1}
+}
+-- ANCHOR_END: NA1
+
+#check nfa2dfa A₃
+
+open Finset
+
+def DA₃ : Dfa.DFA (Fin 2) :=
+-- ANCHOR: DA3
+{ Q := Finset (Fin 3)
+  s := {0}
+  F := { {2}, {0,2}, {1,2}, {0,1,2} }
+  δ := δ_step A₃
+}
+-- ANCHOR_END: DA3
+
+
+end nfaDfaEx

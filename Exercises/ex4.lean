@@ -55,12 +55,50 @@ theorem ex1 : ¬ ∃ A : DFA SigmaABC, L A = L₁
 := sorry
 /-
 Proof that L₁ is not regular (in English).
+Assume L₁ is regular
+so there must be a pumping length n
+let w = aⁿ bⁿ c²ⁿ
 
+let w = xyz where:
+x = a^(p-q)
+y = a^(q)
+z = a^(n-p) ++ b^(n) ++ c^(2n)
+
+consider w = x ++ y^(s) ++ z:
+so w = a^(p-q) ++ a^(s*q) ++ a^(n-p) ++ b^n ++ c^2n
+w = a^( (s-1)*q+n) ++ b^n ++ c^2n
+
+assume s = 0
+
+so we have
+w = a^( n-q ) ++ b^n ++ c^2n
+But our expression had that the exponent of c had to be the sum of the exponents of a and b!
+This isn't the case in our expression - n-q+n ≠ 2n
+So we have a contradiction and our expression isn't regular
 -/
 
 theorem ex2 : ¬ ∃ A : DFA SigmaABC, L A = L₂
 := sorry
 /-
 Proof that L₂ is not regular (in English).
+Assume L₂ is regular
+let w = a^4n ++ b^2n ++ c^n
+
+Let w = xyz where
+x = a^(p-q)
+y = a^(q)
+z = a^(4n-p) ++ b^2n ++ c^n
+
+Consider w = x ++ y^s ++ z
+so w = a^(p-q) ++ a^(s*q) ++ a^(4n-p) ++ b^2n ++ c^n
+w = a^((s-1)*q+4n) ++ b^2n ++ c^n
+
+Assume s = 0
+
+So the exponent of a is 4n-q, b is 2n and c is n
+But our expression had that w = a^α ++ b^β ++ c^γ
+Where α = 2 * β
+and β = 2 * γ
+It's clear that 8n-2q ≠ 2n, giving us a contradiction
 
 -/

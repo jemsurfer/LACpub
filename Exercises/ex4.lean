@@ -56,24 +56,24 @@ theorem ex1 : ¬ ∃ A : DFA SigmaABC, L A = L₁
 /-
 Proof that L₁ is not regular (in English).
 Assume L₁ is regular
-so there must be a pumping length n
 let w = aⁿ bⁿ c²ⁿ
+let the pumping length be m
 
-let w = xyz where:
+let w = xyz, p ≥ |x| + |y|, and q ≥ 1 where:
 x = a^(p-q)
 y = a^(q)
-z = a^(n-p) ++ b^(n) ++ c^(2n)
+z = a^(m-p) ++ b^(m) ++ c^(2m)
 
 consider w = x ++ y^(s) ++ z:
-so w = a^(p-q) ++ a^(s*q) ++ a^(n-p) ++ b^n ++ c^2n
-w = a^( (s-1)*q+n) ++ b^n ++ c^2n
+so w = a^(p-q) ++ a^(s*q) ++ a^(m-p) ++ b^m ++ c^2m
+w = a^( (s-1)*q+m) ++ b^m ++ c^2m
 
 assume s = 0
 
 so we have
-w = a^( n-q ) ++ b^n ++ c^2n
+w = a^( m-q ) ++ b^m ++ c^2m
 But our expression had that the exponent of c had to be the sum of the exponents of a and b!
-This isn't the case in our expression - n-q+n ≠ 2n
+So 2m-q = 2m would require q being 0, which contradicts our requirement for q ≥ 1
 So we have a contradiction and our expression isn't regular
 -/
 
@@ -84,21 +84,22 @@ Proof that L₂ is not regular (in English).
 Assume L₂ is regular
 let w = a^4n ++ b^2n ++ c^n
 
-Let w = xyz where
+let the pumping length be m
+and let w = xyz, p ≥ |x| + |y|, and q ≥ 1 where
 x = a^(p-q)
 y = a^(q)
-z = a^(4n-p) ++ b^2n ++ c^n
+z = a^(4m-p) ++ b^2m ++ c^m
 
 Consider w = x ++ y^s ++ z
-so w = a^(p-q) ++ a^(s*q) ++ a^(4n-p) ++ b^2n ++ c^n
-w = a^((s-1)*q+4n) ++ b^2n ++ c^n
+so w = a^(p-q) ++ a^(s*q) ++ a^(4m-p) ++ b^2m ++ c^m
+w = a^((s-1)*q+4m) ++ b^2m ++ c^m
 
 Assume s = 0
 
-So the exponent of a is 4n-q, b is 2n and c is n
+So the exponent of a is 4m-q, b is 2m and c is m
 But our expression had that w = a^α ++ b^β ++ c^γ
 Where α = 2 * β
 and β = 2 * γ
-It's clear that 8n-2q ≠ 2n, giving us a contradiction
+So we need 4m-q = 4m, meaning q=0 which violates our definition of q ≥ 1
 
 -/

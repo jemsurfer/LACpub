@@ -20,8 +20,8 @@ Level 3: Regular languages
 Level 2: Context-free languages
  - CFGs
  - [N]PDAs
-[- DPDAs
-We have CFG = PDA, but DPDA ≠ NPDA!]
+ - DPDAs
+We have CFG = PDA, but DPDA ≠ NPDA!
 Level 1: Context-sensitive languages
  - Context-sensitive grammars
 Level 0: Recursively enumberable languages
@@ -76,8 +76,6 @@ E.g., abba ∈ L P₁:
 -> (1, [a], [inr a,inl 0])
 -> (1, [], [inl 0])
 -> (2, [], [])
-
-[Run in the simulator, ask about non-determinism]
 -/
 abbrev isDet : Prop
 :=  ∀ q x z ,
@@ -119,8 +117,7 @@ abbrev CFG₁ : CFG SigmaABC
 This is commonly written in shorthand as
 0 := a0a | b0b | c0c | a | b | c | ε
 
-A CFG accepts words by means of the derivation tree
-[Show on whiteboard]
+A CFG accepts words by means of the derivation tree.
 We can simulate this process using a PDA!
 
 All we need is 1 state, pushing the productions from the

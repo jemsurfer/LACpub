@@ -23,6 +23,10 @@ class Alphabet (Sigma : Type) : Type where
 
 attribute [instance] Alphabet.fintype Alphabet.decEq
 
+-- Ensure that having an Alphabet implies decidable equality for its symbols.
+instance (Sigma : Type) [Alphabet Sigma] : DecidableEq Sigma :=
+  (inferInstance : Alphabet Sigma).decEq
+
 instance (Sigma : Type) [Fintype Sigma] [DecidableEq Sigma] : Alphabet Sigma :=
   ⟨inferInstance, inferInstance⟩
 

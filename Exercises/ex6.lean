@@ -70,15 +70,40 @@ Define a grammar G₂ which is not ambigious and whose parsetrees
 reflect the conventions on how to read regular expressions.
 -/
 
+/- 4 precedence levels:
+- atoms (expressions in parentheses)
+- star
+- concatenation
+- plus
+- and E (expression)
+-/
 inductive NT₂ : Type
--- Define your nonterminals here
+| A | S | C | P | E
 deriving Fintype, DecidableEq
 open NT₂
 
 abbrev G₂ : CFG Sigma_RE :=
-{ NT := sorry
-  S := sorry
-  P := sorry
+{ NT := NT₂
+  S := E
+  P := {
+    (NT₂.E, [inl NT₂.P]),
+
+    (NT₂.P, [inl NT₂.P, inr Sigma_RE.plus, inl NT₂.C]),
+    (NT₂.P, [inl NT₂.C]),
+
+    (NT₂.C, [inl NT₂.C, inr Sigma_RE.dot, inl NT₂.S]),
+    (NT₂.C, [inl NT₂.S]),
+
+    (NT₂.S, [inl NT₂.S, inr Sigma_RE.star]),
+    (NT₂.S, [inl NT₂.A]),
+
+    (NT₂.A, [inr Sigma_RE.a]),
+    (NT₂.A, [inr Sigma_RE.b]),
+    (NT₂.A, [inr Sigma_RE.c]),
+    (NT₂.A, [inr Sigma_RE.epsilon]),
+    (NT₂.A, [inr Sigma_RE.empty]),
+    (NT₂.A, [inr Sigma_RE.lpar, inl NT₂.E, inr Sigma_RE.rpar])
+  }
 }
 
 end g₂
@@ -90,14 +115,38 @@ which is LL(1). If G₂ is already LL(1) the just copy this.
 -/
 
 inductive NT₃ : Type
--- Define your nonterminals here
+| E | P | Pp | C | Cp | S | Sp | A
 deriving Fintype, DecidableEq
 open NT₃
 
 abbrev G₃ : CFG Sigma_RE :=
-{ NT := sorry
-  S := sorry
-  P := sorry
+{ NT := NT₃
+  S := E
+  P := {
+    (NT₃.E, [inl NT₃.P]),
+
+    (NT₃.P, [inl NT₃.C, inl NT₃.Pp]),
+
+    (NT₃.Pp, [inr Sigma_RE.plus, inl NT₃.C, inl NT₃.Pp]),
+    (NT₃.Pp, []),
+
+    (NT₃.C, [inl NT₃.S, inl NT₃.Cp]),
+
+    (NT₃.Cp, [inr Sigma_RE.dot, inl NT₃.S, inl NT₃.Cp]),
+    (NT₃.Cp, []),
+
+    (NT₃.S, [inl NT₃.A, inl NT₃.Sp]),
+
+    (NT₃.Sp, [inr Sigma_RE.star, inl NT₃.Sp]),
+    (NT₃.Sp, []),
+
+    (NT₃.A, [inr Sigma_RE.a]),
+    (NT₃.A, [inr Sigma_RE.b]),
+    (NT₃.A, [inr Sigma_RE.c]),
+    (NT₃.A, [inr Sigma_RE.epsilon]),
+    (NT₃.A, [inr Sigma_RE.empty]),
+    (NT₃.A, [inr Sigma_RE.lpar, inl NT₃.E, inr Sigma_RE.rpar])
+  }
 }
 
 end g₃
@@ -123,23 +172,70 @@ e.g.
 -/
 
 inductive Qww : Type
--- Define your TM states here
+| scan | seekA | seekB | matchA | matchB | return | check | accept
 deriving Fintype, DecidableEq, Repr
 open Qww
 
 inductive Γww : Type
--- Define your stack alphabet here
+| blank | markA | markB
 deriving Fintype, DecidableEq, Repr
 open Γww
 
 abbrev Mww : TM SigmaABX
 := {
-  Q := sorry
-  Γ := sorry
-  s := sorry
-  B := sorry
-  F := sorry
-  δ := sorry
+  Q := Qww
+  Γ := Γww
+  s := Qww.scan
+  B := Γww.blank
+  F := { Qww.accept }
+  δ q x :=
+    match q, x with
+    | Qww.scan, inl Γww.blank => some (Qww.scan, inl Γww.blank, Tm.Dir.R)
+    | Qww.scan, inl Γww.markA => some (Qww.scan, inl Γww.markA, Tm.Dir.R)
+    | Qww.scan, inl Γww.markB => some (Qww.scan, inl Γww.markB, Tm.Dir.R)
+    | Qww.scan, inr SigmaABX.a => some (Qww.seekA, inl Γww.markA, Tm.Dir.R)
+    | Qww.scan, inr SigmaABX.b => some (Qww.seekB, inl Γww.markB, Tm.Dir.R)
+    | Qww.scan, inr SigmaABX.X => some (Qww.check, inr SigmaABX.X, Tm.Dir.R)
+
+    | Qww.seekA, inl Γww.blank => none
+    | Qww.seekA, inl Γww.markA => some (Qww.seekA, inl Γww.markA, Tm.Dir.R)
+    | Qww.seekA, inl Γww.markB => some (Qww.seekA, inl Γww.markB, Tm.Dir.R)
+    | Qww.seekA, inr SigmaABX.a => some (Qww.seekA, inr SigmaABX.a, Tm.Dir.R)
+    | Qww.seekA, inr SigmaABX.b => some (Qww.seekA, inr SigmaABX.b, Tm.Dir.R)
+    | Qww.seekA, inr SigmaABX.X => some (Qww.matchA, inr SigmaABX.X, Tm.Dir.R)
+
+    | Qww.seekB, inl Γww.blank => none
+    | Qww.seekB, inl Γww.markA => some (Qww.seekB, inl Γww.markA, Tm.Dir.R)
+    | Qww.seekB, inl Γww.markB => some (Qww.seekB, inl Γww.markB, Tm.Dir.R)
+    | Qww.seekB, inr SigmaABX.a => some (Qww.seekB, inr SigmaABX.a, Tm.Dir.R)
+    | Qww.seekB, inr SigmaABX.b => some (Qww.seekB, inr SigmaABX.b, Tm.Dir.R)
+    | Qww.seekB, inr SigmaABX.X => some (Qww.matchB, inr SigmaABX.X, Tm.Dir.R)
+
+    | Qww.matchA, inl Γww.markA => some (Qww.matchA, inl Γww.markA, Tm.Dir.R)
+    | Qww.matchA, inl Γww.markB => some (Qww.matchA, inl Γww.markB, Tm.Dir.R)
+    | Qww.matchA, inr SigmaABX.a => some (Qww.return, inl Γww.markA, Tm.Dir.L)
+    | Qww.matchA, inr SigmaABX.b => none
+    | Qww.matchA, inr SigmaABX.X => none
+    | Qww.matchA, inl Γww.blank => none
+
+    | Qww.matchB, inl Γww.markA => some (Qww.matchB, inl Γww.markA, Tm.Dir.R)
+    | Qww.matchB, inl Γww.markB => some (Qww.matchB, inl Γww.markB, Tm.Dir.R)
+    | Qww.matchB, inr SigmaABX.b => some (Qww.return, inl Γww.markB, Tm.Dir.L)
+    | Qww.matchB, inr SigmaABX.a => none
+    | Qww.matchB, inr SigmaABX.X => none
+    | Qww.matchB, inl Γww.blank => none
+
+    | Qww.return, inl Γww.blank => some (Qww.scan, inl Γww.blank, Tm.Dir.R)
+    | Qww.return, _ => some (Qww.return, x, Tm.Dir.L)
+
+    | Qww.check, inl Γww.markA => some (Qww.check, inl Γww.markA, Tm.Dir.R)
+    | Qww.check, inl Γww.markB => some (Qww.check, inl Γww.markB, Tm.Dir.R)
+    | Qww.check, inl Γww.blank => some (Qww.accept, inl Γww.blank, Tm.Dir.R)
+    | Qww.check, inr SigmaABX.a => none
+    | Qww.check, inr SigmaABX.b => none
+    | Qww.check, inr SigmaABX.X => none
+
+    | Qww.accept, _ => none
 }
 
 /-

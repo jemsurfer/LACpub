@@ -39,41 +39,77 @@ words in which every ⟨ is “closed” by a ⟩ occurring later in the word. F
 
 /- 1. Define a CFG for the language, you will also need to define an inductive type for the Non-terminals -/
 inductive NTPar : Type
--- E.g. | NT1 | NT2 | ...
+| S
 deriving Fintype, DecidableEq
 open NTPar
 
 abbrev GPar : CFG SigmaPar
-:= { NT := sorry
-     S := sorry
-     P := sorry
+:= { NT := NTPar
+     S := NTPar.S
+     P := {
+          (NTPar.S, []),
+          (NTPar.S, [inr SigmaPar.lpar, inl NTPar.S, inr SigmaPar.rpar, inl NTPar.S])
+     }
 }
 
 /- 2. Define a PDA for the language -/
 -- You need to define inductive types for the states and the stack alphabet
 inductive QPar : Type
--- E.g. | q0 | q1 | ...
+| S | L | R
 deriving Fintype, DecidableEq
 open QPar
 
 inductive ΓPar : Type
--- E.g. | g0 | g1 | ...
+| lpar | rpar | ε
 deriving Fintype, DecidableEq
 open ΓPar
 
 abbrev PPar : PDA SigmaPar
-:= { Q := sorry
-     Γ := sorry
-     s := sorry
-     Z₀ := sorry
-     F := sorry
-     δ q x z := sorry
+:= { Q := QPar
+     Γ := ΓPar
+     s := QPar.S
+     Z₀ := ε
+     δ q x z :=
+            match q, x, z with
+            | QPar.S, some SigmaPar.lpar, ΓPar.ε =>
+                 { (QPar.S, [ΓPar.lpar, ΓPar.ε]) }
+            | QPar.S, some SigmaPar.lpar, ΓPar.lpar =>
+                 { (QPar.S, [ΓPar.lpar, ΓPar.lpar]) }
+            | QPar.S, some SigmaPar.rpar, ΓPar.lpar =>
+                 { (QPar.S, []) }
+            | QPar.S, none, ΓPar.ε =>
+                 { (QPar.R, []) }
+            | _, _, _ => {}
+     F := { QPar.R }
 }
 
 -- 3. Show that ⟨⟩⟨⟩ ∈ L PPar
 -- you can either do this by spelling out the sequence of IDs in a comment or by proving
 theorem e3 : [SigmaPar.lpar,SigmaPar.lpar, SigmaPar.rpar,SigmaPar.lpar,SigmaPar.rpar, SigmaPar.rpar] ∈ L PPar := by
-     sorry
+     refine ⟨QPar.R, [], ?_, ?_⟩
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.read
+     constructor
+     apply Star.step
+     apply Step.silent
+     constructor
+     apply Star.refl
+     simp [PPar]
 -- in Lean.
 
 /-
